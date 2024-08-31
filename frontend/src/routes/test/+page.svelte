@@ -27,53 +27,29 @@
   });
 </script>
 
-<style>
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-
-  th {
-    background-color: #f4f4f4;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  tr:hover {
-    background-color: #f1f1f1;
-  }
-</style>
-
 {#if error}
-  <p>Error: {error}</p>
+  <p class="text-red-500">{error}</p>
 {:else if data.length > 0}
-  <table>
-    <thead>
-      <tr>
-        {#each columns as column}
-          <th>{column}</th>
-        {/each}
-      </tr>
-    </thead>
-    <tbody>
-      {#each data as row}
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 border-collapse">
+      <thead class="bg-gray-50">
         <tr>
           {#each columns as column}
-            <td>{row[column]}</td>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">{column}</th>
           {/each}
         </tr>
-      {/each}
-    </tbody>
-  </table>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {#each data as row}
+          <tr class="hover:bg-gray-100">
+            {#each columns as column}
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 border-b border-gray-200">{row[column]}</td>
+            {/each}
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
 {:else}
   <p>No data available</p>
 {/if}
