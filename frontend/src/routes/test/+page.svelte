@@ -2,6 +2,7 @@
 <script>
   import { onMount } from 'svelte';
   let data = [];
+  let columns = [];
   let error = null;
 
   // Fetch data from the API endpoint on component mount
@@ -11,6 +12,11 @@
       const result = await response.json();
       if (result.success) {
         data = result.data;
+
+        // Automatically generate column headers from the keys of the first object
+        if (data.length > 0) {
+          columns = Object.keys(data[0]);
+        }
       } else {
         error = result.error;
       }
@@ -21,32 +27,54 @@
   });
 </script>
 
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f4f4f4;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
+
 {#if error}
   <p>Error: {error}</p>
-{:else}
+{:else if data.length > 0}
   <table>
     <thead>
       <tr>
-        <th>Game Date</th>
-        <th>Matchup</th>
-        <th>WL</th>
-        <th>Min</th>
-        <th>PTS</th>
-        <!-- Add more columns as needed -->
+        {#each columns as column}
+          <th>{column}</th>
+        {/each}
       </tr>
     </thead>
     <tbody>
-      {#each data as game}
+      {#each data as row}
         <tr>
-          <td>{game.game_date}</td>
-          <td>{game.matchup}</td>
-          <td>{game.wl}</td>
-          <td>{game.min}</td>
-          <td>{game.pts}</td>
-          <!-- Add more table data as needed -->
+          {#each columns as column}
+            <td>{row[column]}</td>
+          {/each}
         </tr>
       {/each}
     </tbody>
   </table>
+{:else}
+  <p>No data available</p>
 {/if}
 
