@@ -10,7 +10,7 @@
   // Function to run the SQL query
   async function runQuery() {
     try {
-      const response = await fetch('/editor', {
+      const response = await fetch('/sql-editor', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,6 +45,17 @@
     font-family: monospace;
     font-size: 16px;
     margin-bottom: 20px;
+    border: 1px solid #ccc; /* Added border for visibility */
+    background-color: #f9f9f9; /* Added background color */
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: 1px solid #333; /* Added border for visibility */
+    background-color: #007bff; /* Button color */
+    color: #fff; /* Button text color */
   }
 
   .result-table {
@@ -63,6 +74,10 @@
   .result-table th {
     background-color: #f2f2f2;
   }
+
+  .text-red-500 {
+    color: #f56565; /* Red color for error text */
+  }
 </style>
 
 <h1>NBA Dataset SQL Query Editor</h1>
@@ -79,6 +94,8 @@
 {#if $error}
   <p class="text-red-500">Error: {$error}</p>
 {:else if $results.length > 0}
+  <!-- Display number of results -->
+  <p>{`Results returned: ${$results.length}`}</p>
   <table class="result-table">
     <thead>
       <tr>
