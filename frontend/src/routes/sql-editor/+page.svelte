@@ -10,7 +10,7 @@
   // Function to run the SQL query
   async function runQuery() {
     try {
-      const response = await fetch('/sql-editor', {
+      const response = await fetch('/editor', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,6 +34,21 @@
       }
     } catch (err) {
       error.set(err.message);
+    }
+  }
+
+  // Function to handle tab key for indentation in the textarea
+  function handleTab(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      const start = event.target.selectionStart;
+      const end = event.target.selectionEnd;
+
+      // Set textarea value to: text before caret + tab + text after caret
+      sqlQuery = sqlQuery.substring(0, start) + '\t' + sqlQuery.substring(end);
+
+      // Put caret at right position again
+      event.target.selectionStart = event.target.selectionEnd = start + 1;
     }
   }
 </script>
@@ -87,6 +102,7 @@
   class="editor"
   bind:value={sqlQuery}
   placeholder="SELECT * FROM players WHERE team = 'Lakers';"
+  on:keydown={handleTab}
 />
 
 <button on:click={runQuery}>Run Query</button>
