@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-import numpy as np  # Add NumPy for handling inf values
+import numpy as np
 import logging
 
 # Configure logging
@@ -33,10 +33,12 @@ def calculate_rolling_avg(df, window=5):
 # Step 3: Calculate growth rates for minutes and performance metrics
 def calculate_growth_rate(df):
     logging.info(f'Calculating growth rates for player {df["display_first_last"].iloc[0]}...')
-    df['Minutes Growth'] = df['min'].pct_change()
-    df['Points Growth'] = df['pts'].pct_change()
-    df['Assists Growth'] = df['ast'].pct_change()
-    df['Rebounds Growth'] = df['reb'].pct_change()
+
+    # Calculate percentage change with a cap on extreme values (-200% to +200%)
+    df['Minutes Growth'] = df['min'].pct_change().clip(-2, 2)
+    df['Points Growth'] = df['pts'].pct_change().clip(-2, 2)
+    df['Assists Growth'] = df['ast'].pct_change().clip(-2, 2)
+    df['Rebounds Growth'] = df['reb'].pct_change().clip(-2, 2)
 
     # Replace inf and -inf with NaN for proper handling
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -46,18 +48,25 @@ def calculate_growth_rate(df):
 # Step 4: Create a composite improvement score based on growth rates
 def calculate_improvement_score(df):
     logging.info(f'Calculating improvement score for player {df["display_first_last"].iloc[0]}...')
+    
+    # Weighted improvement score focusing more on points, assists, and rebounds
     df['Improvement Score'] = (
-        0.5 * df['Minutes Growth'] + 
-        0.3 * df['Points Growth'] + 
-        0.1 * df['Assists Growth'] + 
-        0.1 * df['Rebounds Growth']
+        0.4 * df['Points Growth'] + 
+        0.2 * df['Assists Growth'] + 
+        0.2 * df['Rebounds Growth'] + 
+        0.2 * df['Minutes Growth']
     )
     return df
 
-# Step 5: Rank players based on improvement score
+# Step 5: Rank players based on improvement score, with a filter for minimum games played
 def rank_players(data):
     logging.info('Dropping rows with NaN values...')
     data_clean = data.dropna()
+
+    logging.info('Filtering out players with fewer than 10 games played...')
+    game_counts = data_clean.groupby('display_first_last').size()
+    filtered_players = game_counts[game_counts >= 10].index
+    data_clean = data_clean[data_clean['display_first_last'].isin(filtered_players)]
 
     logging.info('Grouping data by player and calculating mean improvement score...')
     ranked_players = data_clean.groupby('display_first_last').agg({'Improvement Score': 'mean'}).sort_values(by='Improvement Score', ascending=False)
