@@ -21,13 +21,15 @@ def load_data():
     logging.info(f'Data loaded successfully. Number of rows fetched: {len(data)}')
     return data
 
-# Step 2: Filter players by minimum average minutes per game (at least 12 minutes)
-def filter_min_minutes(data, min_minutes=12):
-    logging.info(f'Filtering players with at least {min_minutes} minutes per game on average...')
-    avg_minutes_per_player = data.groupby('display_first_last')['min'].mean()
+# Step 2: Filter players by minimum average minutes per game and points per game
+def filter_players(data, min_minutes=16, min_ppg=7.5):
+    logging.info(f'Filtering players with at least {min_minutes} minutes per game and {min_ppg} points per game...')
     
-    # Filter out players who played fewer than `min_minutes` on average
-    valid_players = avg_minutes_per_player[avg_minutes_per_player >= min_minutes].index
+    # Calculate average minutes and points per game per player
+    avg_stats_per_player = data.groupby('display_first_last').agg({'min': 'mean', 'pts': 'mean'})
+    
+    # Apply both filters for minimum minutes and points
+    valid_players = avg_stats_per_player[(avg_stats_per_player['min'] >= min_minutes) & (avg_stats_per_player['pts'] >= min_ppg)].index
     filtered_data = data[data['display_first_last'].isin(valid_players)]
     
     logging.info(f'Players remaining after filtering: {len(valid_players)}')
@@ -109,8 +111,8 @@ def main():
     # Load the data from SQLite database
     data = load_data()
 
-    # Filter players by minimum average minutes played (at least 12 minutes per game)
-    data = filter_min_minutes(data)
+    # Filter players by minimum average minutes and points per game
+    data = filter_players(data)
 
     # Apply rolling averages and growth rates
     logging.info('Applying rolling averages for all players...')
