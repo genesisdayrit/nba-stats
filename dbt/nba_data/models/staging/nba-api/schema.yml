@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: nba_api  # Logical grouping name in dbt
+    loader: sqlite  # Reference to the loader plugin
+    tables:
+      - name: player_game_stats  # Reference to actual SQLite table
+      - name: player_info  # Reference to actual SQLite table
+
