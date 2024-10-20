@@ -1,6 +1,9 @@
 *.csv
 *.txt
 *.log
+*.env
 
 db/.env*
 venv/
+
+extraction/.env*
