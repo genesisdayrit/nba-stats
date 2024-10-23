@@ -24,10 +24,6 @@ league_game_log_data = LeagueGameLog(
 # Get the data as a DataFrame
 league_game_log_df = league_game_log_data.get_data_frames()[0]  # Access the first DataFrame
 
-# Display the DataFrame (optional)
-print(league_game_log_df)
-
-# Save the DataFrame to a CSV file
-league_game_log_df.to_csv('nba_2024_25_game_schedule.csv', index=False)
-
-print("NBA 2024-25 game schedule has been successfully saved to 'nba_2024_25_game_schedule.csv'.")
+# Display the column names and the first few rows to inspect
+print("Columns in the response:", league_game_log_df.columns)
+print("\nFirst few rows of the data:\n", league_game_log_df.head())

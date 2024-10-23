@@ -3,7 +3,7 @@ from nba_api.stats.endpoints import teamgamelogs
 
 # Define parameters for the 2024-25 preseason
 season = "2024-25"
-season_type = "Pre Season"  # Options: Pre Season, Regular Season, Playoffs, etc.
+season_type = "Regular Season"  # Options: Pre Season, Regular Season, Playoffs, etc.
 league_id = "00"  # NBA league ID
 
 # Fetch team game logs for the 2024-25 preseason
