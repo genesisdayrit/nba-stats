@@ -75,7 +75,7 @@ def fetch_league_game_log():
 # Function to delete the current season's records (full refresh behavior)
 def delete_current_season_data(cursor, season_year, season_type):
     try:
-        cursor.execute("DELETE FROM nba_api.league_game_log WHERE season_year = %s AND season_type = %s", (season_year, season_type))
+        cursor.execute("DELETE FROM nba_api.leaguegamelog__league_game_log WHERE season_year = %s AND season_type = %s", (season_year, season_type))
         deleted_count = cursor.rowcount  # Get the number of deleted rows
         print(f"Deleted {deleted_count} records for season {season_year} and season type {season_type}.")
     except Exception as e:
@@ -111,7 +111,7 @@ def insert_league_game_log_to_db(df):
 
     # Prepare the insert statement (no UPSERT, just insert)
     insert_query = """
-        INSERT INTO nba_api.league_game_log (
+        INSERT INTO nba_api.leaguegamelog__league_game_log (
             season_year, season_type, team_id, team_abbreviation, team_name, game_id, game_date, matchup, wl, min,
             fgm, fga, fg_pct, fg3m, fg3a, fg3_pct, ftm, fta, ft_pct, oreb, dreb, reb, ast, tov, stl, blk, pf, pts, plus_minus, video_available,
             created_at, modified_at
