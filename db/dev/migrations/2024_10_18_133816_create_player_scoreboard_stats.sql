@@ -1,5 +1,7 @@
 -- Write your SQL migration here
 
+CREATE SCHEMA IF NOT EXISTS nba_api;
+
 CREATE TABLE nba_api.player_game_stats (
     GAME_ID VARCHAR(15),
     TEAM_ID INTEGER,

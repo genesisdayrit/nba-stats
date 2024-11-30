@@ -7,6 +7,6 @@ ALTER TABLE nba_api.playergamelogs__player_game_log
     ALTER COLUMN team_name TYPE TEXT,
     ALTER COLUMN game_id TYPE TEXT,
     ALTER COLUMN game_date TYPE DATE,  -- Keep as DATE for proper date handling
-    ALTER COLUMN matchup TYPE TEXT;
+    ALTER COLUMN matchup TYPE TEXT,
     ALTER COLUMN min TYPE TEXT;
     
